@@ -30,13 +30,18 @@ Bob branch: Requires the transaction's locktime to be after the timeout + his si
 2. Claiming Transaction Script (Alice claims)
 Alice’s unlocking script (what she provides):
 
+
+```bitcoin
 <Alice_Signature> <Secret_Preimage> 1
 
+```
 3. Refund Transaction Script (Bob gets refund after timeout)
 Unlocking Script (scriptSig) provided by Bob:
 
+```bitcoin
 <Bob_Signature> 0
  
+```
 4. Test with Sample Hash and Timeout
 Sample values for testing:
 
@@ -57,9 +62,28 @@ OP_ELSE
 OP_ENDIF
 
 ```
+4. Test with Sample Hash and Timeout
+Sample values:
+
+Secret preimage: mysecret12345
+Hash of secret: a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0
+Timeout: 126 blocks (≈ 21 minutes)
+
+Fully filled HTLC Redeem Script example:
+
+```bitcoin
+OP_IF
+    OP_HASH160 a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0 OP_EQUALVERIFY
+    02alicepublickey1234567890abcdef1234567890abcdef1234567890abcdef OP_CHECKSIG
+OP_ELSE
+    126 OP_CHECKLOCKTIMEVERIFY OP_DROP
+    02bobpublickeyabcdef1234567890abcdef1234567890abcdef1234567890 OP_CHECKSIG
+OP_ENDIF
+
+```
 How to test:
 
-Alice's claim: Provide secret + signature + 1
-Bob's refund: After timeout passes, provide signature + 0
+Alice claims: <Alice_Signature> mysecret12345 1
+Bob refunds (after timeout): <Bob_Signature> 0
 
-
+This HTLC ensures the swap is atomic and trustless.
