@@ -36,3 +36,18 @@ flowchart TD
     style A fill:#e3f2fd,stroke:#1976d2
     style K fill:#c8e6c9,stroke:#388e3c
     style L fill:#ffcdd2,stroke:#d32f2f
+```
+
+## 3. What happens if signature verification fails?
+
+- OP_CHECKSIG pushes 0 (false) onto the stack.
+- The entire script evaluates to false.
+- The Bitcoin node rejects the transaction — the output cannot be spent.
+  Funds stay locked forever (or until another valid spend is found).
+
+## 4. Security benefits of hash verification
+
+- The real public key is never stored on-chain in the locking script (only its 20-byte hash).
+- This gives smaller addresses (P2PKH addresses are shorter) and better privacy — the pubkey is only revealed when someone actually spends the output.
+- It protects against certain quantum attacks (hash is harder to reverse than a raw pubkey) and makes address reuse safer.
+- OP_EQUALVERIFY + OP_CHECKSIG together guarantee only the owner of the private key can spend it.
